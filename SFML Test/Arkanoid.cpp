@@ -21,7 +21,7 @@ int main()
 	Sprite sPlayer(tplayer), sBall(tball), sBackground(tbackground);
 	sPlayer.setPosition(640, 620);
 	sBall.setPosition(640, 500);
-
+	Player oPlayer
 	while (game.isOpen())
 	{
 		Event e;
@@ -33,7 +33,7 @@ int main()
 		if (Keyboard::isKeyPressed(Keyboard::Right)) sPlayer.move(10, 0);
 		if (Keyboard::isKeyPressed(Keyboard::Left)) sPlayer.move(-10, 0);
 		game.draw(sBackground);
-		game.draw(sPlayer);
+		game.draw(oPlayer);
 		game.draw(sBall);
 		game.display();
 	}
