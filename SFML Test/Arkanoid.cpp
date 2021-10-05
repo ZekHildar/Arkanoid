@@ -19,9 +19,10 @@ int main()
 	tbackground.loadFromFile("images/background.jpg");
 
 	Sprite sPlayer(tplayer), sBall(tball), sBackground(tbackground);
-	sPlayer.setPosition(640, 620);
+	sPlayer.setPosition(640, 690);
 	sBall.setPosition(640, 500);
-	Player oPlayer
+	sBall.setScale(0.7, 0.7);
+	Player oPlayer;
 	while (game.isOpen())
 	{
 		Event e;
@@ -30,10 +31,13 @@ int main()
 			if (e.type == Event::Closed)
 				game.close();
 		}
-		if (Keyboard::isKeyPressed(Keyboard::Right)) sPlayer.move(10, 0);
-		if (Keyboard::isKeyPressed(Keyboard::Left)) sPlayer.move(-10, 0);
+		sPlayer.getPosition().x;
+
+		if (Keyboard::isKeyPressed(Keyboard::Right)&& (sPlayer.getPosition().x<1130)) sPlayer.move(15, 0);
+		if (Keyboard::isKeyPressed(Keyboard::Left)&&(sPlayer.getPosition().x>0)) sPlayer.move(-15, 0);
 		game.draw(sBackground);
-		game.draw(oPlayer);
+		//game.draw(oPlayer.texture());
+		game.draw(sPlayer);
 		game.draw(sBall);
 		game.display();
 	}
