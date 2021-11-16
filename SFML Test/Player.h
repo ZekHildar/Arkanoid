@@ -34,3 +34,9 @@ public:
 		sprite.setScale(scale, scale);
 	}
 };
+
+class Block : public Loader {
+public:
+	int type;
+	int health;
+};

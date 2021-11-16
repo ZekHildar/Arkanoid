@@ -11,14 +11,14 @@ public:
 	bool menu = true;
 	bool play = false;
 };
-int LEVEL[8][11] = { 0, 1, 1, 1, 1, 1, 1,1, 1, 1, 0,
+int LEVEL[8][11] = { 1, 2, 3, 4, 5, 6, 1,1, 1, 1, 0,
 					0, 1, 1, 0, 1, 0, 0,1, 0, 1, 0,
-					0, 1, 1, 0, 1, 0, 0,1, 0, 1, 0,
-					1, 1, 1, 0, 1, 0, 0,1, 0, 1, 1,
-					1, 1, 1, 0, 1, 0, 0,1, 0, 1, 1, 
-					0, 1, 1, 0, 1, 0, 0,1, 0, 1, 0,
-					0, 1, 1, 0, 1, 0, 0,1, 0, 1, 0, 
-					0, 1, 1, 1, 1, 1, 1,1, 1, 1, 0, };
+					5, 2, 5, 0, 1, 5, 0,5, 5, 1, 3,
+					6, 2, 1, 0, 1, 0, 0,1, 0, 1, 1,
+					6, 2, 1, 4, 1, 0, 0,1, 0, 1, 1, 
+					6, 1, 1, 0, 1, 0, 0,1, 0, 1, 0,
+					6, 4, 4, 0, 6, 0, 0,3, 3, 1, 0, 
+					5, 1, 1, 1, 1, 1, 1,1, 1, 1, 0, };
 int seticon(RenderWindow &game)
 {
 	Image icon;
@@ -28,13 +28,48 @@ int seticon(RenderWindow &game)
 	}
 	game.setIcon(31, 31, icon.getPixelsPtr());
 }
-void setblocks(Sprite sprite[], RenderWindow &game, Texture &t1, Texture &t2)
+int setblocks(Block sprite[], RenderWindow &game, Texture &t1, Texture &t2, Texture& t3, Texture& t4, Texture& t5, Texture& t6)
 {
 	int k = 0;
+	int z = 0;
 	for (int i = 0; i<8; i++)
 		for (int j = 0; j < 11; j++)
 		{
-			if (j%2==0)
+			switch (LEVEL[i][j])
+			{
+			case 1:
+				sprite[k].loadtexture(t1);
+				sprite[k].sprite.setPosition(92 + 54 * j, 134 + 27 * i);
+				z++;
+				break;
+			case 2:
+				sprite[k].loadtexture(t2);
+				sprite[k].sprite.setPosition(92 + 54 * j, 134 + 27 * i);
+				z++;
+				break;
+			case 3:
+				sprite[k].loadtexture(t3);
+				sprite[k].sprite.setPosition(92 + 54 * j, 134 + 27 * i);
+				z++;
+				break;
+			case 4:
+				sprite[k].loadtexture(t4);
+				sprite[k].sprite.setPosition(92 + 54 * j, 134 + 27 * i);
+				z++;
+				break;
+			case 5:
+				sprite[k].loadtexture(t5);
+				sprite[k].sprite.setPosition(92 + 54 * j, 134 + 27 * i);
+				z++;
+				break;
+			case 6:
+				sprite[k].loadtexture(t6);
+				sprite[k].type = 6;
+				sprite[k].sprite.setPosition(92 + 54 * j, 134 + 27 * i);
+				break;
+			}
+			
+			/*if (j%2==0)
 				sprite[k].setTexture(t1);
 			else
 				sprite[k].setTexture(t2);
@@ -43,38 +78,49 @@ void setblocks(Sprite sprite[], RenderWindow &game, Texture &t1, Texture &t2)
 				sprite[k].setPosition(92 + 54 * j, 134 + 27 * i);
 				game.draw(sprite[k]);
 				
-			}
+			}*/
 			k++;
 		}
+	return z;
 }
-
-int main()
+void AssetsLoader(Texture &tblock1, Texture& tblock2, Texture& tblock3, Texture& tblock4, Texture& tblock5, Texture& tblock6, Texture& tplayer, Texture& tball, Texture& tbackground, Texture& tframe, Texture& tPlay, Texture& tExit, Texture& tMenuBG, Texture& tLogo, Texture& tPlayActive, Texture& tExitActive, Font& font, Text& pScore)
 {
-	RenderWindow game(VideoMode(900, 720), "Arkanoid alpha");
-	game.setFramerateLimit(60);
-
-	Texture tblock1, tblock2, tblock3, tplayer, tball, tbackground, tframe, tPlay, tExit, tMenuBG, tLogo, tPlayActive, tExitActive;
-	tblock1.loadFromFile("images/Block1test.png");
-	tblock2.loadFromFile("images/Block2test.png");
+	tblock1.loadFromFile("images/Block1.png");
+	tblock2.loadFromFile("images/Block2.png");
 	tblock3.loadFromFile("images/Block3.png");
+	tblock4.loadFromFile("images/Block4.png");
+	tblock5.loadFromFile("images/Block5.png");
+	tblock6.loadFromFile("images/Block6.png");
 	tplayer.loadFromFile("images/Player.png");
 	tball.loadFromFile("images/Ball.png");
-	tbackground.loadFromFile("images/Background.png");
-	tframe.loadFromFile("images/Frame.png");
+	tbackground.loadFromFile("images/Background2.png");
+	tframe.loadFromFile("images/Frame2.png");
 	tPlay.loadFromFile("images/kPlay.png");
 	tPlayActive.loadFromFile("images/kPlayActive.png");
 	tExit.loadFromFile("images/kExit.png");
 	tExitActive.loadFromFile("images/kExitActive.png");
 	tLogo.loadFromFile("images/Logo.png");
 	tMenuBG.loadFromFile("images/menuBackground.png");
-	seticon(game);
-	Font font;
 	font.loadFromFile("images/ARCADECLASSIC.TTF");
-	Text pScore;
+	
 	pScore.setFont(font);
 	pScore.setCharacterSize(50);
 	pScore.setPosition(735, 117);
 	pScore.setLineSpacing(0.55);
+	pScore.setOutlineThickness(5);
+
+}
+int main()
+{
+	RenderWindow game(VideoMode(900, 720), "Arkanoid alpha");
+	game.setFramerateLimit(60);
+
+	Texture tblock1, tblock2, tblock3, tblock4, tblock5, tblock6, tplayer, tball, tbackground, tframe, tPlay, tExit, tMenuBG, tLogo, tPlayActive, tExitActive;
+	Font font;
+	Text pScore;
+	AssetsLoader(tblock1, tblock2, tblock3, tblock4, tblock5, tblock6, tplayer, tball, tbackground, tframe, tPlay, tExit, tMenuBG, tLogo, tPlayActive, tExitActive, font, pScore);
+	seticon(game);
+	
 
 	Sprite sBackground(tbackground), sFrame(tframe), kPlay(tPlay), kExit(tExit), MenuBG(tMenuBG), Logo(tLogo);
 	Player player;
@@ -96,9 +142,13 @@ int main()
 	float gamespeed = 1;
 
 	Sprite block[88];
-	setblocks(block, game, tblock1, tblock2);
+	Block blocks[88];
+	int z;
+	z = setblocks(blocks, game, tblock1, tblock2, tblock3, tblock4, tblock5, tblock6);
 	int score = 0;
 	float grad = 0;
+	int z2 = 0;
+	player.score = 0;
 	while (game.isOpen())
 	{
 		Event e;
@@ -108,9 +158,6 @@ int main()
 				game.close();
 
 			Vector2i pos = Mouse::getPosition(game);
-			/*if (b.menu && pos.x >= 321 && pos.x <= 579 && pos.y >= 414 && pos.y <= 504) kPlay.setTexture(tPlayActive);
-			else kPlay.setTexture(tPlay);
-			if (b.menu && pos.x >= 321 && pos.x <= 579 && pos.y >= 530 && pos.y <= 620) kExit.setTexture(tExitActive);*/
 			if (e.type == Event::MouseButtonPressed)
 				if (e.key.code == Mouse::Left)
 				{
@@ -140,8 +187,6 @@ int main()
 
 			Logo.move(0, 0 + sin(grad)/4);
 			grad = grad + 0.01;
-			//cout << grad << endl;
-			//cout << sin(grad) << endl;
 			game.draw(MenuBG);
 			game.draw(kPlay);
 			game.draw(kExit);
@@ -151,21 +196,46 @@ int main()
 		else if (b.play)
 		{
 			bool platforminvasion = true;
-			string k = to_string(score);
+			string k = to_string(player.score);
 			pScore.setString("SCORE\n"+k);
 
 			for (int i = 0; i < 88; i++)
 			{
-				if (ball.sprite.getGlobalBounds().intersects(block[i].getGlobalBounds()))
+				if (ball.sprite.getGlobalBounds().intersects(blocks[i].sprite.getGlobalBounds()))
 				{
+					cout << "z: " << z << endl << "z2: " << z2+2 << endl;
 					if (platforminvasion == true)
 					{
-						dy = -dy;
+						if (i % 2 == 0); //ball.scale(0.2);
+						else if (i % 3 == 0) gamespeed = 1.3;
+						else
+						{
+							//ball.scale(1.2);
+							gamespeed = 1;
+						}
+						dy = -dy*1.1;
 						platforminvasion = false;
 					}
-					score = score + 10;
+					switch (blocks[i].type)
+					{
+					case 6:
+					{
+						break;
+					}
+					default:
+					{
+						player.score += 10;
+						cout << player.score << endl;
+						blocks[i].sprite.setPosition(9999, 0);
+						z2++;
+					}
+					}
+					
+					/*score = score + 10;
 					cout << score << endl;
-					block[i].setPosition(9999, 0);
+					blocks[i].sprite.setPosition(9999, 0);
+					z2++;*/
+
 				}
 			}
 			player.move(game);
@@ -184,30 +254,28 @@ int main()
 			if (x < 90 || x>660)  dx = -dx;
 			if (y < 28 || y>720)  dy = -dy;
 
-			if (FloatRect(x, y, 11, 11).intersects(player.sprite.getGlobalBounds()))
+			if /*(FloatRect(x, y, 31, 31).intersects(player.sprite.getGlobalBounds()))*/
+				(player.sprite.getGlobalBounds().intersects(ball.sprite.getGlobalBounds()))
 			{
 				dy = -5;
 				platforminvasion = true;
 			}
-			if (Keyboard::isKeyPressed(Keyboard::Space)) b.mball = false;
-
+			if (Keyboard::isKeyPressed(Keyboard::Space)||Mouse::isButtonPressed(Mouse::Right)) b.mball = false;
+			if (z == ((player.score/10)+1))
+			{
+				b.mball = true;
+				ball.sprite.setPosition(player.sprite.getPosition().x + 42, player.sprite.getPosition().y - 31);
+			}
 			if (!b.mball) ball.sprite.setPosition(x, y);
 			else ball.sprite.setPosition(player.sprite.getPosition().x + 42, player.sprite.getPosition().y - 31);
 
 
-			//if (ball.sprite.getPosition().y >= 700)
-			//{
-			//	b.mball = true;
-			//	dx = 6;
-			//	dy = -5;
-			//	x = player.sprite.getPosition().x + 42;
-			//	y = player.sprite.getPosition().y - 31;
-			//}
+			
 			game.draw(sBackground);
 			game.draw(ball.sprite);
 			game.draw(player.sprite);
 			for (int i = 0; i < 88; i++)
-				game.draw(block[i]);
+				game.draw(blocks[i].sprite);
 			game.draw(sFrame);
 			game.draw(pScore);
 			game.display();
