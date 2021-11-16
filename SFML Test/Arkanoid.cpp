@@ -136,7 +136,7 @@ int main()
 	ball.loadtexture(tball);
 	ball.scale(1);
 	
-	float ballscale = 1;
+	float ballscale = 0.8;
 	float dx = 7, dy = -5;
 	float x=200, y=1000;
 	float gamespeed = 1;
@@ -198,24 +198,36 @@ int main()
 			bool platforminvasion = true;
 			string k = to_string(player.score);
 			pScore.setString("SCORE\n"+k);
-
+			ball.scale(0.8);
 			for (int i = 0; i < 88; i++)
 			{
 				if (ball.sprite.getGlobalBounds().intersects(blocks[i].sprite.getGlobalBounds()))
 				{
-					cout << "z: " << z << endl << "z2: " << z2+2 << endl;
-					if (platforminvasion == true)
-					{
-						if (i % 2 == 0); //ball.scale(0.2);
-						else if (i % 3 == 0) gamespeed = 1.3;
-						else
-						{
-							//ball.scale(1.2);
-							gamespeed = 1;
-						}
-						dy = -dy*1.1;
-						platforminvasion = false;
-					}
+					float bax = ball.sprite.getPosition().x;
+					float bay = ball.sprite.getPosition().y;
+					float blx = blocks[i].sprite.getPosition().x;
+					float bly = blocks[i].sprite.getPosition().y;
+					cout << "//ball x: " << bax << endl;
+					cout << "ball y: " << bay << endl << endl;
+					cout << "block x: " << blx << endl;
+					cout << "block y: " << bly << endl << endl;
+					if (((bax + 31)*ballscale <= blx) || (bax*ballscale >= blx+54)) 
+						dx = -dx;
+					if (((bay+31)*ballscale>=bly)||(bay * ballscale <= bly+24))
+						dy = -dy;
+					//cout << "z: " << z << endl << "z2: " << z2+2 << endl;
+					//if (platforminvasion == true)
+					//{
+					//	if (i % 2 == 0); //ball.scale(0.2);
+					//	else if (i % 3 == 0) gamespeed = 1.3;
+					//	else
+					//	{
+					//		//ball.scale(1.2);
+					//		gamespeed = 1;
+					//	}
+					//	dy = -dy*1.1;
+					//	platforminvasion = false;
+					//}
 					switch (blocks[i].type)
 					{
 					case 6:
@@ -225,7 +237,7 @@ int main()
 					default:
 					{
 						player.score += 10;
-						cout << player.score << endl;
+						//cout << player.score << endl;
 						blocks[i].sprite.setPosition(9999, 0);
 						z2++;
 					}
@@ -257,7 +269,7 @@ int main()
 			if /*(FloatRect(x, y, 31, 31).intersects(player.sprite.getGlobalBounds()))*/
 				(player.sprite.getGlobalBounds().intersects(ball.sprite.getGlobalBounds()))
 			{
-				dy = -5;
+				dy = -5; 
 				platforminvasion = true;
 			}
 			if (Keyboard::isKeyPressed(Keyboard::Space)||Mouse::isButtonPressed(Mouse::Right)) b.mball = false;
