@@ -185,8 +185,8 @@ int main()
 			if (b.menu && pos.x >= 321 && pos.x <= 579 && pos.y >= 530 && pos.y <= 620) kExit.setTexture(tExitActive);
 			else kExit.setTexture(tExit);
 
-			Logo.move(0, 0 + sin(grad)/4);
-			grad = grad + 0.01;
+			Logo.move(0, 0 + sin(grad)/3);
+			grad = grad + 0.03;
 			game.draw(MenuBG);
 			game.draw(kPlay);
 			game.draw(kExit);
