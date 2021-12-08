@@ -11,14 +11,22 @@ public:
 	bool menu = true;
 	bool play = false;
 };
-int LEVEL[8][11] = { 1, 2, 3, 4, 5, 6, 1,1, 1, 1, 0,
-					0, 1, 1, 0, 1, 0, 0,1, 0, 1, 0,
-					5, 2, 5, 0, 1, 5, 0,5, 5, 1, 3,
-					6, 2, 1, 0, 1, 0, 0,1, 0, 1, 1,
-					6, 2, 1, 4, 1, 0, 0,1, 0, 1, 1, 
-					6, 1, 1, 0, 1, 0, 0,1, 0, 1, 0,
-					6, 4, 4, 0, 6, 0, 0,3, 3, 1, 0, 
-					5, 1, 1, 1, 1, 1, 1,1, 1, 1, 0, };
+//int LEVEL[8][11] = { 1, 2, 3, 4, 5, 6, 1,1, 1, 1, 0,
+//					0, 1, 1, 0, 1, 0, 0,1, 0, 1, 0,
+//					5, 2, 5, 0, 1, 5, 0,5, 5, 1, 3,
+//					6, 2, 1, 0, 1, 0, 0,1, 0, 1, 1,
+//					6, 2, 1, 4, 1, 0, 0,1, 0, 1, 1, 
+//					6, 1, 1, 0, 1, 0, 0,1, 0, 1, 0,
+//					6, 4, 4, 0, 6, 0, 0,3, 3, 1, 0, 
+//					5, 1, 1, 1, 1, 1, 1,1, 1, 1, 0, };
+int LEVEL[8][11] = { 0, 0, 2, 2, 2, 2, 2,2, 2, 0, 0,
+					0, 1, 3, 3, 3, 3, 3, 3, 3, 1, 0,
+					0, 1, 3, 4, 4, 4, 4, 4, 3, 1, 0,
+					0, 1, 3, 4, 5, 5, 5, 4, 3, 1, 0,
+					0, 1, 3, 4, 5, 5, 5, 4, 3, 1, 0,
+					0, 1, 3, 4, 4, 4, 4, 4, 3, 1, 0,
+					0, 1, 3, 3, 3, 3, 3, 3, 3, 1, 0,
+					0, 0, 2, 2, 2, 2, 2, 2, 2, 0, 0, };
 int seticon(RenderWindow &game)
 {
 	Image icon;
@@ -83,6 +91,40 @@ int setblocks(Block sprite[], RenderWindow &game, Texture &t1, Texture &t2, Text
 		}
 	return z;
 }
+void BlockBounds(RectangleShape& ball, Sprite& block, int i, float ballscale, float& dx, float& dy, int *z2, Player player, Block blocks)
+{
+	float bax = ball.getPosition().x;
+	float bay = ball.getPosition().y;
+	float blx = block.getPosition().x;
+	float bly = block.getPosition().y;
+	cout << "//ball x: " << bax << endl;
+	cout << "ball y: " << bay << endl << endl;
+	cout << "block x: " << blx << endl;
+	cout << "block y: " << bly << endl << endl;
+	if (((bax + 15) * ballscale > blx) && ((bax + 15) * ballscale < blx + 54) && ((bay * ballscale <= bly + 27) || ((bay - 31) * ballscale >= bly)))
+	{
+		dx = -dx;
+		cout << "YES! X!!" << endl;
+	}
+	else
+	{
+		dy = -dy;
+		cout << "NO! Y!!" << endl;
+	}
+	switch (blocks.type)
+	{
+	case 6:
+	{
+		break;
+	}
+	default:
+	{
+		player.SetScore(10);
+		block.setPosition(9999, 0);
+		z2++;
+	}
+	}
+}
 void AssetsLoader(Texture &tblock1, Texture& tblock2, Texture& tblock3, Texture& tblock4, Texture& tblock5, Texture& tblock6, Texture& tplayer, Texture& tball, Texture& tbackground, Texture& tframe, Texture& tPlay, Texture& tExit, Texture& tMenuBG, Texture& tLogo, Texture& tPlayActive, Texture& tExitActive, Font& font, Text& pScore)
 {
 	tblock1.loadFromFile("images/Block1.png");
@@ -92,7 +134,7 @@ void AssetsLoader(Texture &tblock1, Texture& tblock2, Texture& tblock3, Texture&
 	tblock5.loadFromFile("images/Block5.png");
 	tblock6.loadFromFile("images/Block6.png");
 	tplayer.loadFromFile("images/Player.png");
-	tball.loadFromFile("images/Ball.png");
+	tball.loadFromFile("images/Balls.png");
 	tbackground.loadFromFile("images/Background2.png");
 	tframe.loadFromFile("images/Frame2.png");
 	tPlay.loadFromFile("images/kPlay.png");
@@ -110,10 +152,23 @@ void AssetsLoader(Texture &tblock1, Texture& tblock2, Texture& tblock3, Texture&
 	pScore.setOutlineThickness(5);
 
 }
+void DrawObjects(RenderWindow& game, Sprite sBackground, RectangleShape &ball, Sprite &player, Block(&blocks)[88], Sprite &sFrame, Text &pScore)
+{
+	game.draw(sBackground);
+	game.draw(ball);
+	game.draw(player);
+	for (int i = 0; i < 88; i++)
+		game.draw(blocks[i].sprite);
+	game.draw(sFrame);
+	game.draw(pScore);
+	game.display();
+}
+
 int main()
 {
+	
 	RenderWindow game(VideoMode(900, 720), "Arkanoid alpha");
-	game.setFramerateLimit(60);
+	game.setFramerateLimit(30);
 
 	Texture tblock1, tblock2, tblock3, tblock4, tblock5, tblock6, tplayer, tball, tbackground, tframe, tPlay, tExit, tMenuBG, tLogo, tPlayActive, tExitActive;
 	Font font;
@@ -133,13 +188,14 @@ int main()
 
 	player.loadtexture(tplayer);
 	player.sprite.setTexture(tplayer);
-	ball.loadtexture(tball);
+	/*ball.loadtexture(tball);*/
+	ball.settexture(tball);
 	ball.scale(1);
 	
 	float ballscale = 0.8;
 	float dx = 7, dy = -5;
 	float x=200, y=1000;
-	float gamespeed = 1;
+	float gamespeed = 1.5;
 
 	Sprite block[88];
 	Block blocks[88];
@@ -148,7 +204,7 @@ int main()
 	int score = 0;
 	float grad = 0;
 	int z2 = 0;
-	player.score = 0;
+	player.SetScore(0);
 	while (game.isOpen())
 	{
 		Event e;
@@ -195,59 +251,14 @@ int main()
 		}
 		else if (b.play)
 		{
-			bool platforminvasion = true;
-			string k = to_string(player.score);
+			string k = to_string(player.GetScore());
 			pScore.setString("SCORE\n"+k);
 			ball.scale(0.8);
 			for (int i = 0; i < 88; i++)
 			{
 				if (ball.sprite.getGlobalBounds().intersects(blocks[i].sprite.getGlobalBounds()))
 				{
-					float bax = ball.sprite.getPosition().x;
-					float bay = ball.sprite.getPosition().y;
-					float blx = blocks[i].sprite.getPosition().x;
-					float bly = blocks[i].sprite.getPosition().y;
-					cout << "//ball x: " << bax << endl;
-					cout << "ball y: " << bay << endl << endl;
-					cout << "block x: " << blx << endl;
-					cout << "block y: " << bly << endl << endl;
-					if (((bax + 31)*ballscale <= blx) || (bax*ballscale >= blx+54)) 
-						dx = -dx;
-					if (((bay+31)*ballscale>=bly)||(bay * ballscale <= bly+24))
-						dy = -dy;
-					//cout << "z: " << z << endl << "z2: " << z2+2 << endl;
-					//if (platforminvasion == true)
-					//{
-					//	if (i % 2 == 0); //ball.scale(0.2);
-					//	else if (i % 3 == 0) gamespeed = 1.3;
-					//	else
-					//	{
-					//		//ball.scale(1.2);
-					//		gamespeed = 1;
-					//	}
-					//	dy = -dy*1.1;
-					//	platforminvasion = false;
-					//}
-					switch (blocks[i].type)
-					{
-					case 6:
-					{
-						break;
-					}
-					default:
-					{
-						player.score += 10;
-						//cout << player.score << endl;
-						blocks[i].sprite.setPosition(9999, 0);
-						z2++;
-					}
-					}
-					
-					/*score = score + 10;
-					cout << score << endl;
-					blocks[i].sprite.setPosition(9999, 0);
-					z2++;*/
-
+					BlockBounds(ball.sprite, blocks[i].sprite, i, ballscale, dx, dy, &z2, player, blocks[i]);
 				}
 			}
 			player.move(game);
@@ -269,11 +280,21 @@ int main()
 			if /*(FloatRect(x, y, 31, 31).intersects(player.sprite.getGlobalBounds()))*/
 				(player.sprite.getGlobalBounds().intersects(ball.sprite.getGlobalBounds()))
 			{
-				dy = -5; 
-				platforminvasion = true;
+				float ballx = ball.sprite.getPosition().x;
+				float playerx = player.sprite.getPosition().x;
+				if (((ballx + 15) >= playerx + 28) && ((ballx + 15) <= playerx + 86))
+				{
+					dy = -5;
+					dx = dx * 0.9;
+				}
+				else 
+				{
+					dy = -4;
+					dx = dx * 1.1;
+				}
 			}
 			if (Keyboard::isKeyPressed(Keyboard::Space)||Mouse::isButtonPressed(Mouse::Right)) b.mball = false;
-			if (z == ((player.score/10)+1))
+			if (z == ((player.GetScore()/10)+1))
 			{
 				b.mball = true;
 				ball.sprite.setPosition(player.sprite.getPosition().x + 42, player.sprite.getPosition().y - 31);
@@ -281,16 +302,17 @@ int main()
 			if (!b.mball) ball.sprite.setPosition(x, y);
 			else ball.sprite.setPosition(player.sprite.getPosition().x + 42, player.sprite.getPosition().y - 31);
 
-
-			
-			game.draw(sBackground);
+			for (int i = 0; i < 88; i++)
+				game.draw(blocks[i].sprite);
+			DrawObjects(game, sBackground, ball.sprite, player.sprite, blocks, sFrame, pScore);
+			/*game.draw(sBackground);
 			game.draw(ball.sprite);
 			game.draw(player.sprite);
 			for (int i = 0; i < 88; i++)
 				game.draw(blocks[i].sprite);
 			game.draw(sFrame);
 			game.draw(pScore);
-			game.display();
+			game.display();*/
 		}
 	}
 	return 0;
