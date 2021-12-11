@@ -1,7 +1,6 @@
 ﻿#include <SFML/Graphics.hpp>
 #include <time.h>
 #include <iostream>
-#include "Objects.h"
 #include "Player.h"
 using namespace std;
 using namespace sf;
@@ -91,38 +90,45 @@ int setblocks(Block sprite[], RenderWindow &game, Texture &t1, Texture &t2, Text
 		}
 	return z;
 }
-void BlockBounds(RectangleShape& ball, Sprite& block, int i, float ballscale, float& dx, float& dy, int *z2, Player player, Block blocks)
+void BlockBounds(Ball& ball, Block(&blocks)[88], float ballscale, float& dx, float& dy, int *z2, Player &player, Texture &t)
 {
-	float bax = ball.getPosition().x;
-	float bay = ball.getPosition().y;
-	float blx = block.getPosition().x;
-	float bly = block.getPosition().y;
-	cout << "//ball x: " << bax << endl;
-	cout << "ball y: " << bay << endl << endl;
-	cout << "block x: " << blx << endl;
-	cout << "block y: " << bly << endl << endl;
-	if (((bax + 15) * ballscale > blx) && ((bax + 15) * ballscale < blx + 54) && ((bay * ballscale <= bly + 27) || ((bay - 31) * ballscale >= bly)))
+	for (int i = 0; i < 88; i++)
 	{
-		dx = -dx;
-		cout << "YES! X!!" << endl;
-	}
-	else
-	{
-		dy = -dy;
-		cout << "NO! Y!!" << endl;
-	}
-	switch (blocks.type)
-	{
-	case 6:
-	{
-		break;
-	}
-	default:
-	{
-		player.SetScore(10);
-		block.setPosition(9999, 0);
-		z2++;
-	}
+		if (ball.sprite.getGlobalBounds().intersects(blocks[i].sprite.getGlobalBounds()))
+		{
+			float bax = ball.sprite.getPosition().x;
+			float bay = ball.sprite.getPosition().y;
+			float blx = blocks[i].sprite.getPosition().x;
+			float bly = blocks[i].sprite.getPosition().y;
+			cout << "//ball x: " << bax << endl;
+			cout << "ball y: " << bay << endl << endl;
+			cout << "block x: " << blx << endl;
+			cout << "block y: " << bly << endl << endl;
+			if (((bax + 15) * ballscale > blx) && ((bax + 15) * ballscale < blx + 54) && ((bay * ballscale <= bly + 27) || ((bay - 31) * ballscale >= bly)))
+				{
+					dx = -dx;
+					cout << "YES! X!!" << endl;
+				}
+			else
+				{
+					dy = -dy;
+					cout << "NO! Y!!" << endl;
+				}
+			switch (blocks[i].type)
+			{
+			case 6:
+				{
+					break;
+				}
+			default:
+				{
+					player.SetScore(10);
+					blocks[i].sprite.setPosition(9999, 0);
+					ball.changetexture(t);
+					z2++;
+				}
+			}
+		}
 	}
 }
 void AssetsLoader(Texture &tblock1, Texture& tblock2, Texture& tblock3, Texture& tblock4, Texture& tblock5, Texture& tblock6, Texture& tplayer, Texture& tball, Texture& tbackground, Texture& tframe, Texture& tPlay, Texture& tExit, Texture& tMenuBG, Texture& tLogo, Texture& tPlayActive, Texture& tExitActive, Font& font, Text& pScore)
@@ -168,7 +174,7 @@ int main()
 {
 	
 	RenderWindow game(VideoMode(900, 720), "Arkanoid alpha");
-	game.setFramerateLimit(30);
+	game.setFramerateLimit(15);
 
 	Texture tblock1, tblock2, tblock3, tblock4, tblock5, tblock6, tplayer, tball, tbackground, tframe, tPlay, tExit, tMenuBG, tLogo, tPlayActive, tExitActive;
 	Font font;
@@ -188,7 +194,6 @@ int main()
 
 	player.loadtexture(tplayer);
 	player.sprite.setTexture(tplayer);
-	/*ball.loadtexture(tball);*/
 	ball.settexture(tball);
 	ball.scale(1);
 	
@@ -204,7 +209,6 @@ int main()
 	int score = 0;
 	float grad = 0;
 	int z2 = 0;
-	player.SetScore(0);
 	while (game.isOpen())
 	{
 		Event e;
@@ -254,13 +258,7 @@ int main()
 			string k = to_string(player.GetScore());
 			pScore.setString("SCORE\n"+k);
 			ball.scale(0.8);
-			for (int i = 0; i < 88; i++)
-			{
-				if (ball.sprite.getGlobalBounds().intersects(blocks[i].sprite.getGlobalBounds()))
-				{
-					BlockBounds(ball.sprite, blocks[i].sprite, i, ballscale, dx, dy, &z2, player, blocks[i]);
-				}
-			}
+			BlockBounds(ball, blocks, ballscale, dx, dy, &z2, player, tball);
 			player.move(game);
 			if (ball.sprite.getPosition().y >= 700)
 			{
@@ -277,8 +275,7 @@ int main()
 			if (x < 90 || x>660)  dx = -dx;
 			if (y < 28 || y>720)  dy = -dy;
 
-			if /*(FloatRect(x, y, 31, 31).intersects(player.sprite.getGlobalBounds()))*/
-				(player.sprite.getGlobalBounds().intersects(ball.sprite.getGlobalBounds()))
+			if (player.sprite.getGlobalBounds().intersects(ball.sprite.getGlobalBounds()))
 			{
 				float ballx = ball.sprite.getPosition().x;
 				float playerx = player.sprite.getPosition().x;
@@ -294,7 +291,7 @@ int main()
 				}
 			}
 			if (Keyboard::isKeyPressed(Keyboard::Space)||Mouse::isButtonPressed(Mouse::Right)) b.mball = false;
-			if (z == ((player.GetScore()/10)+1))
+			if (z == ((player.GetScore()/10)))
 			{
 				b.mball = true;
 				ball.sprite.setPosition(player.sprite.getPosition().x + 42, player.sprite.getPosition().y - 31);
@@ -302,17 +299,8 @@ int main()
 			if (!b.mball) ball.sprite.setPosition(x, y);
 			else ball.sprite.setPosition(player.sprite.getPosition().x + 42, player.sprite.getPosition().y - 31);
 
-			for (int i = 0; i < 88; i++)
-				game.draw(blocks[i].sprite);
 			DrawObjects(game, sBackground, ball.sprite, player.sprite, blocks, sFrame, pScore);
-			/*game.draw(sBackground);
-			game.draw(ball.sprite);
-			game.draw(player.sprite);
-			for (int i = 0; i < 88; i++)
-				game.draw(blocks[i].sprite);
-			game.draw(sFrame);
-			game.draw(pScore);
-			game.display();*/
+		
 		}
 	}
 	return 0;

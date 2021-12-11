@@ -5,11 +5,6 @@ using namespace sf;
 class Loader {
 public:
 	Sprite sprite;
-	/*RectangleShape sprite;*/
-	/*Loader(int x, int y)
-	{
-		sprite.setSize(Vector2f(x, y));
-	}*/
 	void loadtexture(Texture &texture)
 	{
 		sprite.setTexture(texture);
@@ -40,8 +35,6 @@ public:
 		Vector2i mouse = Mouse::getPosition(game);
 		if ((float)mouse.x < 576 && (float)mouse.x>90)
 		sprite.setPosition((float)mouse.x, 670);
-		/*cout << "y: "<< mouse.y << endl;
-		cout << "x: "<<mouse.x << endl;*/
 	}
 private:
 	
