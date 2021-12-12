@@ -2,6 +2,9 @@
 #include <time.h>
 #include <iostream>
 #include "Player.h"
+#include "Loader.h"
+#include "Ball.h"
+#include "Block.h"
 using namespace std;
 using namespace sf;
 class Boolean {
