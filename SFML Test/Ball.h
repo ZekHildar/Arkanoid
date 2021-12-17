@@ -1,13 +1,11 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include "NewLoader.h"
 using namespace std;
 using namespace sf;
-class Ball
+class Ball : public NewLoader
 {
 	public:
-		RectangleShape sprite;
-		void settexture(Texture& texture);
-		void changetexture(Texture& texture);
 		void scale(float scale);
 };
 

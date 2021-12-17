@@ -152,7 +152,9 @@
     <ClCompile Include="Arkanoid.cpp" />
     <ClCompile Include="Ball.cpp" />
     <ClCompile Include="Block.cpp" />
+    <ClCompile Include="Bonus.cpp" />
     <ClCompile Include="Loader.cpp" />
+    <ClCompile Include="NewLoader.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Source.cpp" />
   </ItemGroup>
@@ -162,9 +164,10 @@
   <ItemGroup>
     <ClInclude Include="Ball.h" />
     <ClInclude Include="Block.h" />
+    <ClInclude Include="Bonus.h" />
     <ClInclude Include="Loader.h" />
+    <ClInclude Include="NewLoader.h" />
     <ClInclude Include="Player.h" />
-    <ClInclude Include="Objects.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

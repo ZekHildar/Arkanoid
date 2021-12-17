@@ -1,14 +1,15 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <iostream>
-#include "Loader.h"
+#include "NewLoader.h"
 using namespace std;
 using namespace sf;
 
-class Block : public Loader
+class Block : public NewLoader
 {
 	public:
 		int type;
-		int health;
+		int health=1;
+		void changehealth();
 };
 
