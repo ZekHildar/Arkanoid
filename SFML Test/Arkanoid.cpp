@@ -107,7 +107,7 @@ void GameOverText(Font& font, String str)
 {
 	GameOver.setFont(font);
 	GameOver.setCharacterSize(100);
-	GameOver.setPosition(213, 290);
+	GameOver.setPosition(450 - GameOver.getGlobalBounds().width / 2, 360 - GameOver.getGlobalBounds().height / 2 - 20);
 	GameOver.setLineSpacing(0.55);
 	GameOver.setOutlineThickness(10);
 	GameOver.setString(str);
@@ -132,9 +132,14 @@ void BonusAdder()
 		}
 	for (int i = 0; i < 88; i++) cout << BONUS[i] << " ";
 }
-void moveBonus(Bonus& bonus)
+void moveBonus(Bonus& bonus, Boolean &b)
 {
 	bonus.sprite.setPosition(bonus.sprite.getPosition().x, bonus.sprite.getPosition().y+5);
+	if (bonus.sprite.getPosition().y > 720)
+	{
+		b.bonusfalling = false;
+		b.bonus = false;
+	}
 }
 int seticon(RenderWindow &game)
 {
@@ -191,7 +196,7 @@ int setblocks(Block sprite[], RenderWindow &game, Texture &t1, Texture &t2, Text
 }
 void BlockBounds(Ball& ball, Block(&blocks)[88], float ballscale, float& dx, float& dy, int *z2, Player &player, Texture &t, Texture &tBonus, Bonus &bonus, Boolean &b)
 {
-	if (b.bonusfalling) moveBonus(bonus);
+	if (b.bonusfalling) moveBonus(bonus, b);
 	for (int i = 0; i < 88; i++)
 	{
 		if (ball.sprite.getGlobalBounds().intersects(blocks[i].sprite.getGlobalBounds()))
@@ -269,7 +274,7 @@ void BlockBounds(Ball& ball, Block(&blocks)[88], float ballscale, float& dx, flo
 					b.bonusfalling = true;
 					b.bonus = true;
 					bonus.sprite.setPosition(blx, bly);
-					moveBonus(bonus);
+					moveBonus(bonus, b);
 				}
 				
 					player.SetScore(10);
@@ -364,7 +369,7 @@ void LeaderBoard(Boolean& b, RenderWindow& game, vector<leaders>& new_operations
 {
 	string names;
 	int scores;
-	std::ifstream in("highscores.txt"); // окрываем файл для чтения
+	std::ifstream in("highscores.txt");
 	if (in.is_open())
 	{
 		while (in >> names >> scores)
@@ -372,11 +377,8 @@ void LeaderBoard(Boolean& b, RenderWindow& game, vector<leaders>& new_operations
 			new_operations.push_back(leaders(names, scores));
 		}
 	}
-	in.close();     // закрываем файл
-	for (int i = 0; i < new_operations.size(); i++)
-	{
-		std::cout << new_operations[i].names << " - " << new_operations[i].scores << std::endl;
-	}
+	in.close();
+	
 	LeadersNamesSetting(font, new_operations);
 }
 void AnalyzeMenu(RenderWindow &game, Event &e, Boolean &b, Font &font, vector<leaders>& new_operations, Sprite& MenuBG, float& texttimer)
@@ -616,6 +618,52 @@ void Score(Player &player, Boolean &b, Ball &ball, Font &font, Event &e, float &
 				}
 				}
 			}
+		}
+		else
+		{
+			b.gameover = true;
+			GameOverText(font, "YOU WIN!");
+			if (e.type == sf::Event::TextEntered && texttimer > 2000)
+			{
+				if (e.text.unicode == 32)
+				{
+					b.entername = true;
+				}
+				switch (e.text.unicode)
+				{
+				case 0x20: break;
+				case 0xD://Enter
+				{
+					if (!name.isEmpty())
+					{
+						enteredname = name;
+						WriteToFile(enteredname, player);
+					}
+					b.entername = false;
+					b.textentering = false;
+					b.gameover = false;
+					b.menu = true;
+					b.play = false;
+					player.Lives(3);
+					break;
+				}
+				case 0x8://Backspace
+					if (!name.isEmpty() && texttimer > 2000)
+						name.erase(name.getSize() - 1);
+					texttimer = 0;
+					break;
+				default:
+				{
+					name += static_cast<char>(e.text.unicode);
+					cout << e.text.unicode << endl;
+					texttimer = 0;
+					break;
+
+				}
+				}
+			}
+		
+
 		}
 		EnterNameText(font, name);
 	}
