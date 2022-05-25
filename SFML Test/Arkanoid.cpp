@@ -1,5 +1,4 @@
-﻿#include <SFML/Graphics.hpp>
-#include <time.h>
+﻿#include <time.h>
 #include <iostream>
 #include <cmath>
 #include <fstream>
@@ -8,10 +7,11 @@
 #include "Ball.h"
 #include "Block.h"
 #include "Bonus.h"
+
 using namespace std;
 using namespace sf;
 class Boolean {
-public: 
+public:
 	bool mball = true;
 	bool menu = true;
 	bool leaders = false;
@@ -30,27 +30,11 @@ Text EnterName;
 Text LeadersNames;
 string str;
 sf::String name;
-ofstream fout;          // поток для записи
+ofstream fout;
 
 int z;
 int k = 0;
 Event p;
-float PI = 3.14159;
-inline float to_radians(float degrees)
-{
-	return degrees * PI / 180;
-}
-inline float to_degrees(float radians)
-{
-	// Normalize between 0 and 360
-	float degrees = int(radians / PI * 180) % 360;
-	return degrees < 0 ? degrees + 360 : degrees;
-}
-inline float angle(const sf::Vector2f& a, const sf::Vector2f& b = sf::Vector2f(0.f, 0.f))
-{
-	// Y-axis is flipped
-	return std::atan2(b.y - a.y, b.x - a.x);
-}
 
 struct leaders
 {
@@ -58,7 +42,7 @@ struct leaders
 	int scores;
 	leaders(string n, int s) : names(n), scores(s)
 	{}
-	
+
 };
 void LeadersNamesSetting(Font& font, vector<leaders>& new_operations)
 {
@@ -77,13 +61,6 @@ void LeadersNamesSetting(Font& font, vector<leaders>& new_operations)
 	LeadersNames.setPosition(450 - LeadersNames.getGlobalBounds().width / 2, 360 - LeadersNames.getGlobalBounds().height / 2 - 20);
 	LeadersNames.setLineSpacing(1);
 	LeadersNames.setOutlineThickness(10);
-	/*for (int i = 0; i < new_operations.size(); i++)
-	{
-		players += new_operations[i].names;
-		players += to_string(new_operations[i].scores);
-		players += "\n";
-	}
-	LeadersNames.setString(players);*/
 }
 void EnterNameText(Font& font, string text)
 {
@@ -94,7 +71,7 @@ void EnterNameText(Font& font, string text)
 	EnterName.setOutlineThickness(10);
 	EnterName.setString(text);
 }
-void PauseText(Font &font)
+void PauseText(Font& font)
 {
 	Pause.setFont(font);
 	Pause.setCharacterSize(100);
@@ -125,23 +102,23 @@ void BonusAdder()
 {
 	int a;
 	for (int i = 0; i < 88; i++)
-		{
-			a = rand() % 10 + 1;
-			if ((a < 4)&&(a>0)) BONUS[i] = a;
-			else  BONUS[i] = 0;
-		}
+	{
+		a = rand() % 10 + 1;
+		if ((a < 4) && (a > 0)) BONUS[i] = a;
+		else  BONUS[i] = 0;
+	}
 	for (int i = 0; i < 88; i++) cout << BONUS[i] << " ";
 }
-void moveBonus(Bonus& bonus, Boolean &b)
+void moveBonus(Bonus& bonus, Boolean& b)
 {
-	bonus.sprite.setPosition(bonus.sprite.getPosition().x, bonus.sprite.getPosition().y+5);
+	bonus.sprite.setPosition(bonus.sprite.getPosition().x, bonus.sprite.getPosition().y + 5);
 	if (bonus.sprite.getPosition().y > 720)
 	{
 		b.bonusfalling = false;
 		b.bonus = false;
 	}
 }
-int seticon(RenderWindow &game)
+int seticon(RenderWindow& game)
 {
 	Image icon;
 	if (!icon.loadFromFile("images/Ball.png"))
@@ -150,27 +127,27 @@ int seticon(RenderWindow &game)
 	}
 	game.setIcon(31, 31, icon.getPixelsPtr());
 }
-int setblocks(Block sprite[], RenderWindow &game, Texture &t1, Texture &t2, Texture& t3, Texture& t4, Texture& t5, Texture& t6, Texture &tNewBlocks)
+int setblocks(Block sprite[], RenderWindow& game, Texture& t1, Texture& t2, Texture& t3, Texture& t4, Texture& t5, Texture& t6, Texture& tNewBlocks)
 {
 	int k = 0;
 	int z = 0;
-	for (int i = 0; i<8; i++)
+	for (int i = 0; i < 8; i++)
 		for (int j = 0; j < 11; j++)
 		{
 			switch (LEVEL[i][j])
 			{
 			case 1:
-				sprite[k].settexture(tNewBlocks,0, 54, 27, LEVEL[i][j]-1, 1);
+				sprite[k].settexture(tNewBlocks, 0, 54, 27, LEVEL[i][j] - 1, 1);
 				sprite[k].sprite.setPosition(92 + 54 * j, 134 + 27 * i);
 				z++;
 				break;
 			case 2:
-				sprite[k].settexture(tNewBlocks,54, 54, 27, LEVEL[i][j] - 1, 1);
+				sprite[k].settexture(tNewBlocks, 54, 54, 27, LEVEL[i][j] - 1, 1);
 				sprite[k].sprite.setPosition(92 + 54 * j, 134 + 27 * i);
 				z++;
 				break;
 			case 3:
-				sprite[k].settexture(tNewBlocks, 108,54, 27, LEVEL[i][j] - 1, 1);
+				sprite[k].settexture(tNewBlocks, 108, 54, 27, LEVEL[i][j] - 1, 1);
 				sprite[k].sprite.setPosition(92 + 54 * j, 134 + 27 * i);
 				z++;
 				break;
@@ -185,7 +162,7 @@ int setblocks(Block sprite[], RenderWindow &game, Texture &t1, Texture &t2, Text
 				z++;
 				break;
 			case 6:
-				sprite[k].settexture(tNewBlocks, 270, 54, 27, LEVEL[i][j] - 1,1);
+				sprite[k].settexture(tNewBlocks, 270, 54, 27, LEVEL[i][j] - 1, 1);
 				sprite[k].type = 6;
 				sprite[k].sprite.setPosition(92 + 54 * j, 134 + 27 * i);
 				break;
@@ -194,106 +171,64 @@ int setblocks(Block sprite[], RenderWindow &game, Texture &t1, Texture &t2, Text
 		}
 	return z;
 }
-void BlockBounds(Ball& ball, Block(&blocks)[88], float ballscale, float& dx, float& dy, int *z2, Player &player, Texture &t, Texture &tBonus, Bonus &bonus, Boolean &b)
+void BlockBounds(Ball& ball, Block(&blocks)[88], float ballscale, float& dx, float& dy, int* z2, Player& player, Texture& t, Texture& tBonus, Bonus& bonus, Boolean& b)
 {
 	if (b.bonusfalling) moveBonus(bonus, b);
 	for (int i = 0; i < 88; i++)
 	{
 		if (ball.sprite.getGlobalBounds().intersects(blocks[i].sprite.getGlobalBounds()))
 		{
-			float bax = ball.sprite.getPosition().x;
+			/*float bax = ball.sprite.getPosition().x;
 			float bay = ball.sprite.getPosition().y;
 			float blx = blocks[i].sprite.getPosition().x;
 			float bly = blocks[i].sprite.getPosition().y;
 			cout << "//ball x: " << bax << endl;
 			cout << "ball y: " << bay << endl << endl;
 			cout << "block x: " << blx << endl;
-			cout << "block y: " << bly << endl << endl;
-			
-			const sf::Vector2f ballCenter(
-				ball.sprite.getPosition().x +ball.sprite.getScale().x / 2,
-				ball.sprite.getPosition().y +ball.sprite.getScale().y / 2
-			);
-			const sf::Vector2f brickCenter(
-				blocks[i].sprite.getPosition().x + 27,
-				blocks[i].sprite.getPosition().y + 13.5
-			);
-			float ballAngle = to_degrees(angle(ballCenter, brickCenter));
+			cout << "block y: " << bly << endl << endl;*/
+			blocks[i].collision();
+			ball.BlockCollission(blocks[i], dx, dy);
 
-			// Get brick ratio angle
-			float brickRatio = to_degrees(
-				std::tan(static_cast<float>(27) / 54)
-			);
-			if ((ballAngle > brickRatio && ballAngle < (180 - brickRatio)) ||
-				(ballAngle > 180 + brickRatio && ballAngle < (360 - brickRatio)))
+			/*if ((bay > bly + blocks[i].sprite.getSize().y - 8) || (bay + ball.sprite.getSize().y < bly + 8))
 			{
-				// Vertical side, flip Y-axis
+				dy = -dy;
+				cout << "NO! Y!!" << endl;
+
+			}
+			if ((bax + ball.sprite.getSize().x < blx + 8) || (bax > blx + blocks[i].sprite.getSize().x - 8))
+			{
 				dx = -dx;
-			}
-			else
-			{
-				// Horizontal side, flip X-axis
-				dx = PI - dx;
-			}
-			//{
-			//	// Vertical side, flip Y-axis
-			//	dy = -dy;
-			//}
-			//else
-			//{
-			//	// Horizontal side, flip X-axis
-			//	dx = - dx;
-			//}
-			/*if ((bay<bly)&&((bax + 16 >= blx)|| (blx + 54 <= bax))) dx = -dx;
-			if ((bax > blx) && ((bay + 16 >= bly) || (bay -27 <= bly))) dy = -dy;*/
-			/*if (((bay + 16 >= bly) && (bax > blx)) || 
-			((bax > blx) && (bay + 16 >= bly))) dy = -dy;*/
-			/*if (((bax + 16) >= blx) && ((bax + 16) < blx + 54) || ((bay <= bly + 27) && ((bay - 16) >= bly)))
-				{
-					dx = -dx;
-					cout << "YES! X!!" << endl;
-				}
-			else
-				{
-					dy = -dy;
-					cout << "NO! Y!!" << endl;
-				}*/
+				cout << "YES! X!!" << endl;
+			}*/
 			switch (blocks[i].type)
 			{
 			case 6:
-				{
-					break;
-				}
+			{
+				break;
+			}
 			default:
-				{
-				if ((BONUS[i] > 0) && (BONUS[i] < 4)&!b.bonus)
+			{
+				if ((BONUS[i] > 0) && (BONUS[i] < 4) & !b.bonus)
 				{
 					cout << "//////////////////////    " << BONUS[i] << endl;
 					bonus.type = BONUS[i];
 					bonus.SetBonus(BONUS[i], tBonus);
 					b.bonusfalling = true;
 					b.bonus = true;
-					bonus.sprite.setPosition(blx, bly);
+					bonus.sprite.setPosition(blocks[i].sprite.getPosition().x, blocks[i].sprite.getPosition().y);
 					moveBonus(bonus, b);
 				}
-				
-					player.SetScore(10);
-					blocks[i].sprite.setPosition(9999, 0);
-					z2++;
-				}
+
+				player.SetScore(10);
+				//blocks[i].sprite.setPosition(9999, 0);
+				z2++;
+			}
 			}
 		}
 	}
 }
-void AssetsLoader(Texture &tblock1, Texture& tblock2, Texture& tblock3, Texture& tblock4, Texture& tblock5, Texture& tblock6, Texture& tplayer, Texture& tball, Texture& tbackground, Texture& tframe, Texture& tPlay, Texture& tExit, Texture& tMenuBG, Texture& tLogo, Texture& tPlayActive, Texture& tExitActive, Font& font, Text& pScore, Texture &tLeaders, Texture &tLeadersActive, Texture& tPause, Texture& tPauseActive, Texture &tPauseScreen, Texture &tLife, Texture &tNewBlocks, Texture &tBonus)
+void AssetsLoader(Texture& tblock1, Texture& tblock2, Texture& tblock3, Texture& tblock4, Texture& tblock5, Texture& tblock6, Texture& tplayer, Texture& tball, Texture& tbackground, Texture& tframe, Texture& tPlay, Texture& tExit, Texture& tMenuBG, Texture& tLogo, Texture& tPlayActive, Texture& tExitActive, Font& font, Text& pScore, Texture& tLeaders, Texture& tLeadersActive, Texture& tPause, Texture& tPauseActive, Texture& tPauseScreen, Texture& tLife, Texture& tNewBlocks, Texture& tBonus)
 {
-	tblock1.loadFromFile("images/Block1.png");
-	tblock2.loadFromFile("images/Block2.png");
-	tblock3.loadFromFile("images/Block3.png");
-	tblock4.loadFromFile("images/Block4.png");
-	tblock5.loadFromFile("images/Block5.png");
-	tblock6.loadFromFile("images/Block6.png");
-	/*tplayer.loadFromFile("images/Player.png");*/
 	tplayer.loadFromFile("images/newpaddles.png");
 	tball.loadFromFile("images/Balls.png");
 	tbackground.loadFromFile("images/Background.png");
@@ -319,12 +254,8 @@ void AssetsLoader(Texture &tblock1, Texture& tblock2, Texture& tblock3, Texture&
 	pScore.setLineSpacing(0.55);
 	pScore.setLetterSpacing(0.01);
 	pScore.setOutlineThickness(5);
-	
-	
-	/*pScore.setColor(Color())*/
-
 }
-void DrawObjects(RenderWindow& game, Sprite sBackground, RectangleShape &ball, RectangleShape &player, Block(&blocks)[88], Sprite &sFrame, Text &pScore, Sprite &kPause, Boolean &b, Sprite &PauseScreen, Sprite (&Life)[3], Player oplayer, Bonus &bonus)
+void DrawObjects(RenderWindow& game, Sprite sBackground, RectangleShape& ball, RectangleShape& player, Block(&blocks)[88], Sprite& sFrame, Text& pScore, Sprite& kPause, Boolean& b, Sprite& PauseScreen, Sprite(&Life)[3], Player oplayer, Bonus& bonus)
 {
 	game.draw(sBackground);
 	game.draw(ball);
@@ -339,7 +270,7 @@ void DrawObjects(RenderWindow& game, Sprite sBackground, RectangleShape &ball, R
 		game.draw(Life[i]);
 	}
 	if (b.bonusfalling) game.draw(bonus.sprite);
-	
+
 	if (b.gameover)
 	{
 		game.draw(PauseScreen);
@@ -349,23 +280,23 @@ void DrawObjects(RenderWindow& game, Sprite sBackground, RectangleShape &ball, R
 		}
 		else if (!b.textentering) game.draw(EnterName);
 	}
-	if (b.pause&& (oplayer.Lives(2) > 0))
+	if (b.pause && (oplayer.Lives(2) > 0))
 	{
 		game.draw(PauseScreen);
 		game.draw(Pause);
 	}
-	
+
 	game.display();
 }
-void LeaderBoardMenu(Boolean& b, RenderWindow& game, Sprite& background, Event &e)
+void LeaderBoardMenu(Boolean& b, RenderWindow& game, Sprite& background, Event& e)
 {
-	
+
 	game.draw(background);
 	game.draw(LeadersNames);
 	game.display();
-	
+
 }
-void LeaderBoard(Boolean& b, RenderWindow& game, vector<leaders>& new_operations, Font&font)
+void LeaderBoard(Boolean& b, RenderWindow& game, vector<leaders>& new_operations, Font& font)
 {
 	string names;
 	int scores;
@@ -378,10 +309,10 @@ void LeaderBoard(Boolean& b, RenderWindow& game, vector<leaders>& new_operations
 		}
 	}
 	in.close();
-	
+
 	LeadersNamesSetting(font, new_operations);
 }
-void AnalyzeMenu(RenderWindow &game, Event &e, Boolean &b, Font &font, vector<leaders>& new_operations, Sprite& MenuBG, float& texttimer)
+void AnalyzeMenu(RenderWindow& game, Event& e, Boolean& b, Font& font, vector<leaders>& new_operations, Sprite& MenuBG, float& texttimer)
 {
 	Vector2i pos = Mouse::getPosition(game);
 	if (e.type == Event::MouseButtonPressed)
@@ -398,7 +329,7 @@ void AnalyzeMenu(RenderWindow &game, Event &e, Boolean &b, Font &font, vector<le
 			}
 			if (b.menu && texttimer > 2000)
 			{
-				
+
 				if (pos.x >= 321 && pos.x <= 579 && pos.y >= 566 && pos.y <= 656) game.close();
 				else if (pos.x >= 321 && pos.x <= 579 && pos.y >= 463 && pos.y <= 553)
 				{
@@ -414,19 +345,19 @@ void AnalyzeMenu(RenderWindow &game, Event &e, Boolean &b, Font &font, vector<le
 				}
 				texttimer = 0;
 			}
-			
+
 			if (b.play && b.pause)
 			{
-					if (pos.x >= 0 && pos.x <= 900 &&
-						pos.y >= 0 && pos.y <= 720)
-					{
-						b.mball = false;
-						b.pause = false;
-						k = 0;
-						PauseText(font);
-					}
+				if (pos.x >= 0 && pos.x <= 900 &&
+					pos.y >= 0 && pos.y <= 720)
+				{
+					b.mball = false;
+					b.pause = false;
+					k = 0;
+					PauseText(font);
+				}
 			}
-			if (b.play &! b.pause)
+			if (b.play & !b.pause)
 			{
 				if (pos.x >= 793 && pos.x <= 884 &&
 					pos.y >= 13 && pos.y <= 104)
@@ -436,11 +367,11 @@ void AnalyzeMenu(RenderWindow &game, Event &e, Boolean &b, Font &font, vector<le
 					PauseText(font);
 				}
 			}
-			
-			
+
+
 		}
 }
-void AnalyzeEvent(Event &e, RenderWindow &game, Boolean &b, Font &font, vector<leaders>& new_operations, Sprite &MenuBG, float &menutimer)
+void AnalyzeEvent(Event& e, RenderWindow& game, Boolean& b, Font& font, vector<leaders>& new_operations, Sprite& MenuBG, float& menutimer)
 {
 	while (game.pollEvent(e))
 	{
@@ -449,7 +380,7 @@ void AnalyzeEvent(Event &e, RenderWindow &game, Boolean &b, Font &font, vector<l
 		AnalyzeMenu(game, e, b, font, new_operations, MenuBG, menutimer);
 	}
 }
-void Menu(Boolean &b,RenderWindow& game, Sprite& kPlay, Sprite& kExit, Texture& tPlayActive, Texture& tPlay, Texture& tExit, Sprite& MenuBG, float &grad, Sprite &Logo, Texture &tExitActive, Sprite &kLeaders, Texture &tLeadersActive, Texture &tLeaders)
+void Menu(Boolean& b, RenderWindow& game, Sprite& kPlay, Sprite& kExit, Texture& tPlayActive, Texture& tPlay, Texture& tExit, Sprite& MenuBG, float& grad, Sprite& Logo, Texture& tExitActive, Sprite& kLeaders, Texture& tLeadersActive, Texture& tLeaders)
 {
 	Vector2i pos = Mouse::getPosition(game);
 	if (b.menu && pos.x >= 321 && pos.x <= 579 && pos.y >= 360 && pos.y <= 450)
@@ -473,7 +404,7 @@ void Menu(Boolean &b,RenderWindow& game, Sprite& kPlay, Sprite& kExit, Texture& 
 	game.display();
 }
 
-void BallPosition(Ball &ball, Boolean& b, float &dx, float & dy,float &x, float	&y, Player &player, float &gamespeed)
+void BallPosition(Ball& ball, Boolean& b, float& dx, float& dy, float& x, float& y, Player& player, float& gamespeed)
 {
 	if (Keyboard::isKeyPressed(Keyboard::Space) || Mouse::isButtonPressed(Mouse::Right))
 	{
@@ -485,11 +416,11 @@ void BallPosition(Ball &ball, Boolean& b, float &dx, float & dy,float &x, float	
 	{
 		b.mball = true;
 		player.Lives(1);
-		
+
 	}
-	if (b.mball && (k==0))
+	if (b.mball && (k == 0))
 	{
-		ball.sprite.setPosition((player.sprite.getPosition().x + (player.sprite.getSize().x / 2)- (ball.sprite.getSize().x/2)), player.sprite.getPosition().y - 17);
+		ball.sprite.setPosition((player.sprite.getPosition().x + (player.sprite.getSize().x / 2) - (ball.sprite.getSize().x / 2)), player.sprite.getPosition().y - 17);
 		x = player.sprite.getPosition().x + 50;
 		y = player.sprite.getPosition().y - 17;
 	}
@@ -507,35 +438,30 @@ void BallPosition(Ball &ball, Boolean& b, float &dx, float & dy,float &x, float	
 			x += dx * gamespeed;
 			y += dy * gamespeed;
 		}
-		ball.sprite.move(0.4 * 30 * std::cos(dx),0.7 * 30 * std::sin(dx));
-		//ball.sprite.setPosition(x, y);
-		//ball.sprite.move(1.5*10* std::cos(dx), -1.5 * std::sin(dy));
+		ball.sprite.setPosition(x, y);
+
 	}
-	if ((ball.sprite.getPosition().x < 90 || ball.sprite.getPosition().x + ball.sprite.getScale().x>675)) dx = PI - dx;
-	if ((ball.sprite.getPosition().y < 30 || ball.sprite.getPosition().y + ball.sprite.getScale().y>720))  dx = -dx;
-	/*if (x < 90 || x>675)  dx = -dx;
-	if (y < 28 || y>720)  dy = -dy;*/
+	if ((ball.sprite.getPosition().x < 90 || ball.sprite.getPosition().x + ball.sprite.getScale().x>675)) dx = -dx;
+	if ((ball.sprite.getPosition().y < 30 || ball.sprite.getPosition().y + ball.sprite.getScale().y>720))  dy = -dy;
 }
 void WriteToFile(std::string name, Player& player)
 {
-	fout.open("highscores.txt", ios::app); // окрываем файл для записи
+	fout.open("highscores.txt", ios::app);
 	if (fout.is_open())
 	{
 		fout << name << " " << player.GetScore() << std::endl;
 	}
 	fout.close();
 }
-void PlayerAndBall(Player &player, Ball &ball, float& dx, float& dy, Bonus &bonus, Boolean &b, Texture &tplayer)
+void PlayerAndBall(Player& player, Ball& ball, float& dx, float& dy, Bonus& bonus, Boolean& b, Texture& tplayer)
 {
 	if (player.sprite.getGlobalBounds().intersects(ball.sprite.getGlobalBounds()))
 	{
 
 		float ballx = ball.sprite.getPosition().x;
 		float playerx = player.sprite.getPosition().x;
-		const float x = ballx + ball.sprite.getScale().x / 2 - playerx;
-		const float range = 180 - 30 * 2;
-		const float degrees = (range * x / player.sprite.getScale().x) + 30;
-		dx = -dx + ((rand() % 1 -1)/2);
+
+		dy = -5;
 		/*if ((ballx >= player.sprite.getSize().x * 0.2) && (ballx <= playerx + player.sprite.getSize().x*0.8))
 		{
 			dy = -5;
@@ -549,14 +475,14 @@ void PlayerAndBall(Player &player, Ball &ball, float& dx, float& dy, Bonus &bonu
 	}
 	if (player.sprite.getGlobalBounds().intersects(bonus.sprite.getGlobalBounds()))
 	{
-		switch(bonus.type)
+		switch (bonus.type)
 		{
-		case 1: 
+		case 1:
 		{
 			player.settexture(tplayer, 0, 85, 22, 0, 2);
 			break;
 		}
-		case 2: 
+		case 2:
 		{
 			player.settexture(tplayer, 190, 137, 22, 0, 2);
 			break;
@@ -567,11 +493,11 @@ void PlayerAndBall(Player &player, Ball &ball, float& dx, float& dy, Bonus &bonu
 		b.bonus = false;
 	}
 }
-void Score(Player &player, Boolean &b, Ball &ball, Font &font, Event &e, float &texttimer) {
+void Score(Player& player, Boolean& b, Ball& ball, Font& font, Event& e, float& texttimer) {
 	string k = to_string(player.GetScore());
 	string enteredname;
 	pScore.setString("SCORE\n" + k);
-	if ((z == ((player.GetScore() / 10)))||player.Lives(2) <= 0)
+	if ((z == ((player.GetScore() / 10))) || player.Lives(2) <= 0)
 	{
 		b.mball = true;
 		ball.sprite.setPosition((player.sprite.getPosition().x + (player.sprite.getSize().x / 2) - (ball.sprite.getSize().x / 2)), player.sprite.getPosition().y - 17);
@@ -584,7 +510,7 @@ void Score(Player &player, Boolean &b, Ball &ball, Font &font, Event &e, float &
 				if (e.text.unicode == 32)
 				{
 					b.entername = true;
-					}
+				}
 				switch (e.text.unicode)
 				{
 				case 0x20: break;
@@ -606,7 +532,7 @@ void Score(Player &player, Boolean &b, Ball &ball, Font &font, Event &e, float &
 				case 0x8://Backspace
 					if (!name.isEmpty() && texttimer > 2000)
 						name.erase(name.getSize() - 1);
-						texttimer = 0;
+					texttimer = 0;
 					break;
 				default:
 				{
@@ -662,36 +588,36 @@ void Score(Player &player, Boolean &b, Ball &ball, Font &font, Event &e, float &
 				}
 				}
 			}
-		
+
 
 		}
 		EnterNameText(font, name);
 	}
-		
+
 }
-	
+
 
 
 
 int main()
 {
-	
+
 	RenderWindow game(VideoMode(900, 720), "Arkanoid alpha");
 	game.setFramerateLimit(30);
 
-	Texture tblock1, tblock2, tblock3, tblock4, tblock5, tblock6, tplayer, tball, tbackground, tframe, 
-		tPlay, tExit, tMenuBG, tLogo, tPlayActive, tExitActive, tLeaders, tLeadersActive, tPause, 
+	Texture tblock1, tblock2, tblock3, tblock4, tblock5, tblock6, tplayer, tball, tbackground, tframe,
+		tPlay, tExit, tMenuBG, tLogo, tPlayActive, tExitActive, tLeaders, tLeadersActive, tPause,
 		tPauseActive, tPauseScreen, tLife, tNewBlocks, tBonus;
 	Font font;
 	Player player;
 	Ball ball;
 	Bonus bonus;
 	Boolean b;
-	AssetsLoader(tblock1, tblock2, tblock3, tblock4, tblock5, tblock6, tplayer, tball, tbackground, tframe, 
-		tPlay, tExit, tMenuBG, tLogo, tPlayActive, tExitActive, font, pScore, tLeadersActive, tLeaders, tPause, 
+	AssetsLoader(tblock1, tblock2, tblock3, tblock4, tblock5, tblock6, tplayer, tball, tbackground, tframe,
+		tPlay, tExit, tMenuBG, tLogo, tPlayActive, tExitActive, font, pScore, tLeadersActive, tLeaders, tPause,
 		tPauseActive, tPauseScreen, tLife, tNewBlocks, tBonus);
 	seticon(game);
-	Sprite sBackground(tbackground), sFrame(tframe), kPlay(tPlay), kExit(tExit), kLeaders(tLeaders), 
+	Sprite sBackground(tbackground), sFrame(tframe), kPlay(tPlay), kExit(tExit), kLeaders(tLeaders),
 		MenuBG(tMenuBG), Logo(tLogo), kPause(tPause), PauseScreen(tPauseScreen), Life[3];
 
 	Logo.setPosition(53, 60);
@@ -699,8 +625,8 @@ int main()
 	kLeaders.setPosition(321, 463);
 	kExit.setPosition(321, 566);
 	kPause.setPosition(793, 13);
-	player.settexture(tplayer,85, 105, 22, 1, 2);
-	ball.settexture(tball,0, 16, 16, 0, 1);
+	player.settexture(tplayer, 85, 105, 22, 1, 2);
+	ball.settexture(tball, 0, 16, 16, 0, 1);
 
 	Clock clock;
 	float texttimer = 0;
@@ -720,9 +646,9 @@ int main()
 	float bonusx, bonusy;
 	float bonusdy = -5;
 	float gamespeed = 1.5;
-	
+
 	Block blocks[88];
-	
+
 	float grad = 0;
 	int z2 = 0;
 	BonusAdder();
@@ -741,9 +667,9 @@ int main()
 		b.textentering = false;
 		if (b.menu)
 		{
-			Menu(b, game, kPlay, kExit, tPlayActive, tPlay, tExit, MenuBG, grad, Logo, 
+			Menu(b, game, kPlay, kExit, tPlayActive, tPlay, tExit, MenuBG, grad, Logo,
 				tExitActive, kLeaders, tLeaders, tLeadersActive);
-			z = setblocks(blocks, game, tblock1, tblock2, tblock3, tblock4, tblock5, 
+			z = setblocks(blocks, game, tblock1, tblock2, tblock3, tblock4, tblock5,
 				tblock6, tNewBlocks);
 			player.ResetScore();
 
@@ -756,18 +682,18 @@ int main()
 		{
 			texttimer += time;
 			Vector2i pos = Mouse::getPosition(game);
-			if (b.play && pos.x >= 793 && pos.x <= 884 && pos.y >= 13 && pos.y <= 104) 
+			if (b.play && pos.x >= 793 && pos.x <= 884 && pos.y >= 13 && pos.y <= 104)
 				kPause.setTexture(tPauseActive);
 			else kPause.setTexture(tPause);
 			BlockBounds(ball, blocks, ballscale, dx, dy, &z2, player, tball, tBonus, bonus, b);
 			player.move(game);
 			BallPosition(ball, b, dx, dy, x, y, player, gamespeed);
-			PlayerAndBall(player, ball, dx, dy,  bonus, b, tplayer);
+			PlayerAndBall(player, ball, dx, dy, bonus, b, tplayer);
 			Score(player, b, ball, font, e, texttimer);
 
 			DrawObjects(game, sBackground, ball.sprite, player.sprite, blocks, sFrame, pScore,
 				kPause, b, PauseScreen, Life, player, bonus);
-		
+
 		}
 	}
 	return 0;
