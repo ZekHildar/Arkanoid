@@ -1,6 +1,8 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include "Player.h"
+#include "Bonus.h"
+#include "Boolean.h"
 using namespace std;
 using namespace sf;
 
@@ -34,4 +36,26 @@ int Player::Lives(int i)
 	if (i == 1) lives -= 1;
 	if (i == 3) lives = 3;
 	return lives;
+}
+void Player::BonusIntersects(Bonus& bonus, Texture& tplayer, Boolean& b)
+{
+	if (sprite.getGlobalBounds().intersects(bonus.sprite.getGlobalBounds()))
+	{
+		switch (bonus.type)
+		{
+		case 1:
+		{
+			settexture(tplayer, 0, 85, 22, 0, 2);
+			break;
+		}
+		case 2:
+		{
+			settexture(tplayer, 190, 137, 22, 0, 2);
+			break;
+		}
+
+		}
+		b.bonusfalling = false;
+		b.bonus = false;
+	}
 }

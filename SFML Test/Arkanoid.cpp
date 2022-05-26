@@ -3,26 +3,26 @@
 #include <cmath>
 #include <fstream>
 #include "Player.h"
-#include "Loader.h"
 #include "Ball.h"
 #include "Block.h"
 #include "Bonus.h"
+#include "Boolean.h"
 
 using namespace std;
 using namespace sf;
-class Boolean {
-public:
-	bool mball = true;
-	bool menu = true;
-	bool leaders = false;
-	bool play = false;
-	bool pause = false;
-	bool gameover = false;
-	bool entername = false;
-	bool textentering = false;
-	bool bonus = false;
-	bool bonusfalling = false;
-};
+//class Boolean {
+//public:
+//	bool mball = true;
+//	bool menu = true;
+//	bool leaders = false;
+//	bool play = false;
+//	bool pause = false;
+//	bool gameover = false;
+//	bool entername = false;
+//	bool textentering = false;
+//	bool bonus = false;
+//	bool bonusfalling = false;
+//};
 Text pScore;
 Text Pause;
 Text GameOver;
@@ -97,27 +97,7 @@ int LEVEL[8][11] = { 0, 0, 2, 2, 2, 2, 2,2, 2, 0, 0,
 					0, 1, 3, 4, 4, 4, 4, 4, 3, 1, 0,
 					0, 1, 3, 3, 3, 3, 3, 3, 3, 1, 0,
 					0, 0, 2, 2, 2, 2, 2, 2, 2, 0, 0, };
-int BONUS[88];
-void BonusAdder()
-{
-	int a;
-	for (int i = 0; i < 88; i++)
-	{
-		a = rand() % 10 + 1;
-		if ((a < 4) && (a > 0)) BONUS[i] = a;
-		else  BONUS[i] = 0;
-	}
-	for (int i = 0; i < 88; i++) cout << BONUS[i] << " ";
-}
-void moveBonus(Bonus& bonus, Boolean& b)
-{
-	bonus.sprite.setPosition(bonus.sprite.getPosition().x, bonus.sprite.getPosition().y + 5);
-	if (bonus.sprite.getPosition().y > 720)
-	{
-		b.bonusfalling = false;
-		b.bonus = false;
-	}
-}
+
 int seticon(RenderWindow& game)
 {
 	Image icon;
@@ -127,79 +107,30 @@ int seticon(RenderWindow& game)
 	}
 	game.setIcon(31, 31, icon.getPixelsPtr());
 }
-int setblocks(Block sprite[], RenderWindow& game, Texture& t1, Texture& t2, Texture& t3, Texture& t4, Texture& t5, Texture& t6, Texture& tNewBlocks)
+int setblocks(Block sprite[], RenderWindow& game, Texture& tNewBlocks)
 {
 	int k = 0;
 	int z = 0;
 	for (int i = 0; i < 8; i++)
 		for (int j = 0; j < 11; j++)
 		{
-			switch (LEVEL[i][j])
-			{
-			case 1:
-				sprite[k].settexture(tNewBlocks, 0, 54, 27, LEVEL[i][j] - 1, 1);
-				sprite[k].sprite.setPosition(92 + 54 * j, 134 + 27 * i);
-				z++;
-				break;
-			case 2:
-				sprite[k].settexture(tNewBlocks, 54, 54, 27, LEVEL[i][j] - 1, 1);
-				sprite[k].sprite.setPosition(92 + 54 * j, 134 + 27 * i);
-				z++;
-				break;
-			case 3:
-				sprite[k].settexture(tNewBlocks, 108, 54, 27, LEVEL[i][j] - 1, 1);
-				sprite[k].sprite.setPosition(92 + 54 * j, 134 + 27 * i);
-				z++;
-				break;
-			case 4:
-				sprite[k].settexture(tNewBlocks, 162, 54, 27, LEVEL[i][j] - 1, 1);
-				sprite[k].sprite.setPosition(92 + 54 * j, 134 + 27 * i);
-				z++;
-				break;
-			case 5:
-				sprite[k].settexture(tNewBlocks, 216, 54, 27, LEVEL[i][j] - 1, 1);
-				sprite[k].sprite.setPosition(92 + 54 * j, 134 + 27 * i);
-				z++;
-				break;
-			case 6:
-				sprite[k].settexture(tNewBlocks, 270, 54, 27, LEVEL[i][j] - 1, 1);
-				sprite[k].type = 6;
-				sprite[k].sprite.setPosition(92 + 54 * j, 134 + 27 * i);
-				break;
-			}
+			sprite[k].SetBlocks(i, j, LEVEL, tNewBlocks, z);
 			k++;
 		}
 	return z;
 }
 void BlockBounds(Ball& ball, Block(&blocks)[88], float ballscale, float& dx, float& dy, int* z2, Player& player, Texture& t, Texture& tBonus, Bonus& bonus, Boolean& b)
 {
-	if (b.bonusfalling) moveBonus(bonus, b);
+	if (b.bonusfalling) 
+	bonus.moveBonus(b);
 	for (int i = 0; i < 88; i++)
 	{
 		if (ball.sprite.getGlobalBounds().intersects(blocks[i].sprite.getGlobalBounds()))
 		{
-			/*float bax = ball.sprite.getPosition().x;
-			float bay = ball.sprite.getPosition().y;
-			float blx = blocks[i].sprite.getPosition().x;
-			float bly = blocks[i].sprite.getPosition().y;
-			cout << "//ball x: " << bax << endl;
-			cout << "ball y: " << bay << endl << endl;
-			cout << "block x: " << blx << endl;
-			cout << "block y: " << bly << endl << endl;*/
+			
 			blocks[i].collision();
 			ball.BlockCollission(blocks[i], dx, dy);
-
-			/*if ((bay > bly + blocks[i].sprite.getSize().y - 8) || (bay + ball.sprite.getSize().y < bly + 8))
-			{
-				dy = -dy;
-				cout << "NO! Y!!" << endl;
-
-			}
-			if ((bax + ball.sprite.getSize().x < blx + 8) || (bax > blx + blocks[i].sprite.getSize().x - 8))
-			{
-				dx = -dx;
-				cout << "YES! X!!" << endl;
-			}*/
+			
 			switch (blocks[i].type)
 			{
 			case 6:
@@ -208,19 +139,8 @@ void BlockBounds(Ball& ball, Block(&blocks)[88], float ballscale, float& dx, flo
 			}
 			default:
 			{
-				if ((BONUS[i] > 0) && (BONUS[i] < 4) & !b.bonus)
-				{
-					cout << "//////////////////////    " << BONUS[i] << endl;
-					bonus.type = BONUS[i];
-					bonus.SetBonus(BONUS[i], tBonus);
-					b.bonusfalling = true;
-					b.bonus = true;
-					bonus.sprite.setPosition(blocks[i].sprite.getPosition().x, blocks[i].sprite.getPosition().y);
-					moveBonus(bonus, b);
-				}
-
+				bonus.BonusAdder(b, tBonus, ball.sprite.getPosition().x, ball.sprite.getPosition().y, i);
 				player.SetScore(10);
-				//blocks[i].sprite.setPosition(9999, 0);
 				z2++;
 			}
 			}
@@ -386,7 +306,6 @@ void Menu(Boolean& b, RenderWindow& game, Sprite& kPlay, Sprite& kExit, Texture&
 	if (b.menu && pos.x >= 321 && pos.x <= 579 && pos.y >= 360 && pos.y <= 450)
 	{
 		kPlay.setTexture(tPlayActive);
-		cout << "Active!" << endl;
 	}
 	else kPlay.setTexture(tPlay);
 	if (b.menu && pos.x >= 321 && pos.x <= 579 && pos.y >= 463 && pos.y <= 553) kLeaders.setTexture(tLeadersActive);
@@ -404,46 +323,6 @@ void Menu(Boolean& b, RenderWindow& game, Sprite& kPlay, Sprite& kExit, Texture&
 	game.display();
 }
 
-void BallPosition(Ball& ball, Boolean& b, float& dx, float& dy, float& x, float& y, Player& player, float& gamespeed)
-{
-	if (Keyboard::isKeyPressed(Keyboard::Space) || Mouse::isButtonPressed(Mouse::Right))
-	{
-		b.mball = false;
-		dx = 6;
-		dy = -5;
-	}
-	if (ball.sprite.getPosition().y >= 688)
-	{
-		b.mball = true;
-		player.Lives(1);
-
-	}
-	if (b.mball && (k == 0))
-	{
-		ball.sprite.setPosition((player.sprite.getPosition().x + (player.sprite.getSize().x / 2) - (ball.sprite.getSize().x / 2)), player.sprite.getPosition().y - 17);
-		x = player.sprite.getPosition().x + 50;
-		y = player.sprite.getPosition().y - 17;
-	}
-	if (b.pause && (k == 3) && !b.mball)
-	{
-		b.mball = true;
-		x = x;
-		y = y;
-		ball.sprite.setPosition(x, y);
-	}
-	if (!b.mball)
-	{
-		if (!b.pause)
-		{
-			x += dx * gamespeed;
-			y += dy * gamespeed;
-		}
-		ball.sprite.setPosition(x, y);
-
-	}
-	if ((ball.sprite.getPosition().x < 90 || ball.sprite.getPosition().x + ball.sprite.getScale().x>675)) dx = -dx;
-	if ((ball.sprite.getPosition().y < 30 || ball.sprite.getPosition().y + ball.sprite.getScale().y>720))  dy = -dy;
-}
 void WriteToFile(std::string name, Player& player)
 {
 	fout.open("highscores.txt", ios::app);
@@ -457,41 +336,9 @@ void PlayerAndBall(Player& player, Ball& ball, float& dx, float& dy, Bonus& bonu
 {
 	if (player.sprite.getGlobalBounds().intersects(ball.sprite.getGlobalBounds()))
 	{
-
-		float ballx = ball.sprite.getPosition().x;
-		float playerx = player.sprite.getPosition().x;
-
-		dy = -5;
-		/*if ((ballx >= player.sprite.getSize().x * 0.2) && (ballx <= playerx + player.sprite.getSize().x*0.8))
-		{
-			dy = -5;
-			dx = dx * 0.9;
-		}
-		else
-		{
-			dy = -4;
-			dx = dx * 1.1;
-		}*/
+		dy = -dy;
 	}
-	if (player.sprite.getGlobalBounds().intersects(bonus.sprite.getGlobalBounds()))
-	{
-		switch (bonus.type)
-		{
-		case 1:
-		{
-			player.settexture(tplayer, 0, 85, 22, 0, 2);
-			break;
-		}
-		case 2:
-		{
-			player.settexture(tplayer, 190, 137, 22, 0, 2);
-			break;
-		}
-
-		}
-		b.bonusfalling = false;
-		b.bonus = false;
-	}
+	player.BonusIntersects(bonus, tplayer, b);
 }
 void Score(Player& player, Boolean& b, Ball& ball, Font& font, Event& e, float& texttimer) {
 	string k = to_string(player.GetScore());
@@ -610,7 +457,7 @@ int main()
 		tPauseActive, tPauseScreen, tLife, tNewBlocks, tBonus;
 	Font font;
 	Player player;
-	Ball ball;
+	Ball ball, ball1;
 	Bonus bonus;
 	Boolean b;
 	AssetsLoader(tblock1, tblock2, tblock3, tblock4, tblock5, tblock6, tplayer, tball, tbackground, tframe,
@@ -651,7 +498,8 @@ int main()
 
 	float grad = 0;
 	int z2 = 0;
-	BonusAdder();
+	bonus.BonusGenerator();
+	
 
 	while (game.isOpen())
 	{
@@ -669,8 +517,7 @@ int main()
 		{
 			Menu(b, game, kPlay, kExit, tPlayActive, tPlay, tExit, MenuBG, grad, Logo,
 				tExitActive, kLeaders, tLeaders, tLeadersActive);
-			z = setblocks(blocks, game, tblock1, tblock2, tblock3, tblock4, tblock5,
-				tblock6, tNewBlocks);
+			z = setblocks(blocks, game, tNewBlocks);
 			player.ResetScore();
 
 		}
@@ -687,7 +534,7 @@ int main()
 			else kPause.setTexture(tPause);
 			BlockBounds(ball, blocks, ballscale, dx, dy, &z2, player, tball, tBonus, bonus, b);
 			player.move(game);
-			BallPosition(ball, b, dx, dy, x, y, player, gamespeed);
+			ball.BallPosition(ball, b, dx, dy, x, y, player, gamespeed, k);
 			PlayerAndBall(player, ball, dx, dy, bonus, b, tplayer);
 			Score(player, b, ball, font, e, texttimer);
 

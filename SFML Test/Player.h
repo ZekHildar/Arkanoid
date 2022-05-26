@@ -2,6 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include "NewLoader.h"
+#include "Bonus.h"
 using namespace std;
 using namespace sf;
 class Player : public NewLoader
@@ -18,6 +19,7 @@ class Player : public NewLoader
 			void GetPlayerCoords();
 		}
 		int Lives(int i);
+		void BonusIntersects(Bonus& bonus, Texture& tplayer, Boolean& b);
 		void GetPlayerCoords();
 		int SetScore(int plusscore);
 		int GetScore();

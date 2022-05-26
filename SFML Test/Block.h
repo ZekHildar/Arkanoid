@@ -14,5 +14,6 @@ class Block : public NewLoader
 		int health=1;
 		void changehealth();
 		void collision(	);
+		void SetBlocks(int i, int j, int(&LEVEL)[8][11], Texture& tNewBlocks, int& z);
 };
 
